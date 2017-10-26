@@ -1,0 +1,113 @@
+<%= render 'layouts/header' %>
+
+<section class="friend-section mg-top bg">
+	<div class="container">
+		<div class="card-friend-container">
+		<div class="row">
+			<a id="modal-click" data-toggle="modal" data-target="#add_friend_modal">
+			<div class="card-friend card-friend-add">
+				<div class="add-friend">
+					<i class="fa fa-plus" aria-hidden="true"></i>
+				</div>
+			</div>
+			</a>
+			<% @friends_all.each do |friend| %>
+			<div class="card-friend">
+				<div class="card-shared">
+				<div id="wish-tooltip-<%= friend.id %>" class="card-shared-i-y"><i class="fa fa-star" aria-hidden="true"></i><%= friend.items.size %></div>
+				<div class="mdl-tooltip" data-mdl-for="wish-tooltip-<%= friend.id %>">
+					There is <%= friend.items.size %> items on <%= friend.name %>'s wish list
+				</div>
+				<% if friend.share_friends.size > 0 %>
+						<div id="shared-tooltip-<%= friend.id %>" class="card-shared-i"><i class="fa fa-share-alt-square" aria-hidden="true"></i><%= friend.share_friends.size %></div>
+						<% if friend.share == 1 %>
+							<div class="mdl-tooltip" data-mdl-for="shared-tooltip-<%= friend.id %>">
+							 <%= friend.share_friends.size + 1 %> people are sharing <%= friend.name %>'s board
+							</div>
+						<% else %>
+							<div class="mdl-tooltip" data-mdl-for="shared-tooltip-<%= friend.id %>">
+							You're sharing <%= friend.name %>'s board<br/>with <%= friend.share_friends.size %> person
+							</div>
+						<% end %>
+				<% end %>
+				</div>
+				<% if friend.share == 1 %>
+					<div class="card-shared-with">shared by <%= friend.user.first_name %></div>
+				<% end %>
+			  <div class="card-friend-title">
+			  	<%= link_to image_tag(friend.icon) %>
+			    <h2><%= friend.name %></h2>
+			  </div>
+
+			  <div class="card-friend-cta">
+				  <a href="/friends/<%= friend.id %>"><i class="fa fa-paper-plane-o" aria-hidden="true"></i>Explore</a>
+				  <a href="/wish/<%= friend.id %>"><i class="fa fa-smile-o" aria-hidden="true"></i>Wish List</a>
+			  </div>
+			  <div class="card-friend-button">
+			  	<ul>
+			  		<% if friend.share != 1 %>
+						<li><a data-toggle="modal" data-target="#edit_friend_modal-<%= friend.id %>"><i class="fa fa-pencil-square-o" aria-hidden="true"></i>Edit</a></li>
+					<% end %>
+				  	<li><a class="copy-to-clipboard" data-clipboard-text="localhost:3000/view/<%= friend.token_view %>"><i class="fa fa-eye" aria-hidden="true"></i>Share (view only)</a></li>
+				  	<% if friend.share != 1 %>
+				  		<li><a class="copy-to-clipboard-2" data-clipboard-text="localhost:3000/share/<%= friend.token_share %>"><i class="fa fa-share-square-o" aria-hidden="true"></i>Share (manage)</a></li>
+				  	<% end %>
+				</ul>
+			  </div>
+			</div>
+			<% @f = friend %>
+			<%= render :partial => 'friends/friend_edit_modal', :objet => @f %>
+			<% end %>
+		</div>
+		</div>
+	</div>
+</section>
+
+<div id="snackbar">Sharing link (view only) copied to clipboard</div>
+<div id="snackbar2">Sharing link (manage) copied to clipboard</div>
+
+<script type="text/javascript">
+	var clipboard = new Clipboard('.copy-to-clipboard');
+	clipboard.on('success', function(e) {
+		    console.info('Action:', e.action);
+		    console.info('Text:', e.text);
+		    console.info('Trigger:', e.trigger);
+
+		    e.clearSelection();
+		    // Get the snackbar DIV
+		    var x = document.getElementById("snackbar")
+		    // Add the "show" class to DIV
+		    x.className = "show";
+		    // After 3 seconds, remove the show class from DIV
+		    setTimeout(function(){ x.className = x.className.replace("show", ""); }, 7000);
+		});
+
+	var clipboard = new Clipboard('.copy-to-clipboard-2');
+	clipboard.on('success', function(e) {
+		    console.info('Action:', e.action);
+		    console.info('Text:', e.text);
+		    console.info('Trigger:', e.trigger);
+
+		    e.clearSelection();
+		    // Get the snackbar DIV
+		    var x = document.getElementById("snackbar2")
+		    // Add the "show" class to DIV
+		    x.className = "show";
+		    // After 3 seconds, remove the show class from DIV
+		    setTimeout(function(){ x.className = x.className.replace("show", ""); }, 7000);
+		});
+
+</script>
+
+<script>
+    $(document).ready(function(){
+        $(.datepicker).datepicker({
+            format: 'mm/dd/yyyy',
+            container: container,
+            todayHighlight: true,
+            autoclose: true,
+        })
+    })
+</script>
+
+<%= render 'friends/friend_modal' %>

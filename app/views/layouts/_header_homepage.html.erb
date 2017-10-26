@@ -1,0 +1,42 @@
+<header class="hero">
+	<nav>
+		<div class="nav-left">
+		<ul>
+			<li><a href="/">My Logo</a></li>
+		</ul>
+		</div>
+		<div class="nav-right">
+		<ul>
+			<% if user_signed_in? %>
+			  <li>
+			  <%= link_to('Boards', friends_path) %>        
+			  </li>
+			  <li>
+			  <%= link_to('Logout', destroy_user_session_path, method: :delete) %>        
+			  </li>
+			<% else %>
+			  <li>
+			  <%= link_to('Login', new_user_session_path)  %>  
+			  </li>
+
+			  <li>
+			  <%= link_to('Register', new_user_registration_path,
+            	{ :class=>"main-cta" })  %>
+			  </li>
+			<% end %>
+		</ul>
+		</div>
+	</nav>
+</header>
+
+<script>
+$(window).on("scroll", function() {
+    if($(window).scrollTop() > 450) {
+        $(".hero").addClass("hero-active");
+    } else {
+        //remove the background property so it comes transparent again (defined in your css)
+       $(".hero").removeClass("hero-active");
+    }
+});
+</script>
+

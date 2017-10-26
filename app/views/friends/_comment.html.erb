@@ -1,0 +1,28 @@
+        <div class="modal-comments">
+        	<!-- Insert Comment System Here -->
+        	<div class="comment-show">
+        	<% @comments.each do |comment| %>
+        		<div class="single-comment">
+        			<!-- Change for name --><%= comment.user_id %> - <%= comment.content %> - <%= comment.date %> 
+        			
+        				<%= simple_form_for @comment, :method => :delete do |f| %>
+							<%= f.input :id, :as => :hidden, input_html: {value: comment.id} %>
+							<%= f.input :asin, :as => :hidden, input_html: {value: comment.asin} %>
+							<%= f.input :friend_id, :as => :hidden, input_html: {value: comment.friend_id} %>
+						    <%= f.button :submit, 'Delete', class: 'button-remove button-board mdl-button mdl-js-button mdl-button--raised mdl-button--colored' %>
+						<% end %>	
+        			
+        		</div>
+        	<% end %>
+        	</div>
+
+			<%= simple_form_for @comment, :method => :create, :remote => true do |f| %>
+				<%= f.input :content %>
+				<%= f.input :asin, :as => :hidden, input_html: {value: @item_infos[0].asin } %>
+				<%= f.input :friend_id, :as => :hidden, input_html: {value: @friend.id} %>
+				<%= f.input :user_id, :as => :hidden, input_html: {value: current_user.id} %>
+				<%= f.input :item_id, :as => :hidden, input_html: {value: @item_infos[0].id} %>
+			    <%= f.button :submit, 'Create', class: 'button-remove button-board mdl-button mdl-js-button mdl-button--raised mdl-button--colored' %>
+			<% end %>	
+
+        </div>

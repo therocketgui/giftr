@@ -1,0 +1,2 @@
+module ShareFriendsHelper
+end

@@ -1,0 +1,17 @@
+<header>
+	<nav>
+		<div class="nav-left">
+		<ul>
+			<li><a href="/">My Logo</a></li>
+			<li><%= link_to('Boards', friends_path) %></li>
+		</ul>
+		</div>
+		<div class="nav-right">
+		<ul>
+			<li class="header-sep"><%= @friend.name %>'s Board</li>
+			<li><a href="/friends/<%= @friend.id %>" class="">Explore</a></li>
+			<li><a href="/wish/<%= @friend.id %>" class="cta cta-main cta-medium">Wish List</a></li>
+		</ul>
+		</div>
+	</nav>
+</header>

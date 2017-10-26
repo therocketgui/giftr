@@ -1,0 +1,22 @@
+
+<section class="login-form">
+	<div class="container">
+		<div class="login-form-card login-card">
+			<h4 class="title">Login</h4>
+			<%= simple_form_for(resource, as: resource_name, url: session_path(resource_name)) do |f| %>
+			  <div class="form-inputs">
+			    <%= f.input :email, label: false, placeholder: 'Email', required: false, autofocus: true, input_html: { class: 'login-form-input' } %>
+			    <%= f.input :password, label: false, placeholder: 'Password', required: false, input_html: { class: 'login-form-input' }  %>
+			    <%= f.input :remember_me, as: :boolean if devise_mapping.rememberable? %>
+			  </div>
+
+			  <div class="form-actions">
+			    <%= f.button :submit, "Log in", class: 'cta cta-main cta-medium cta-full-width' %>
+			  </div>
+			<% end %>
+		</div>
+		<div class="login-form-links">
+			<%= render "devise/shared/links" %>
+		</div>
+	</div>
+</section>

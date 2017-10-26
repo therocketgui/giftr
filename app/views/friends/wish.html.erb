@@ -1,0 +1,193 @@
+<%= render 'layouts/header_friends' %>
+
+<section class="subheader">
+			<div class="nav-left">
+				<ul class="sub-large">
+				  	<li class="board-share-btn"><a class="copy-to-clipboard" data-clipboard-text="localhost:3000/view/<%= @friend.token_view %>"><i class="fa fa-eye" aria-hidden="true"></i>Share (view only)</a></li>
+
+				  	<li class="board-share-btn"><a class="copy-to-clipboard-2" data-clipboard-text="localhost:3000/share/<%= @friend.token_share %>"><i class="fa fa-share-square-o" aria-hidden="true"></i>Share (manage)</a></li>
+				<ul>
+			</div>
+
+			<div class="nav-right">
+				<ul>
+
+				<ul>
+			</div>
+</section>
+
+<section class="main" id="wishlist">
+<div class="container">
+	<div class="card-columns">
+	<% @items.each do |product| %>
+		<div class="cardp-container">
+			<a href="/wish/<%= @friend.id %>/item/<%= product.id %>">
+			<div class="cardp">
+				<%= image_tag(product.image) %>
+			</div>
+
+			<div class="cardp-top-left"><a class="button-buy mdl-button mdl-js-button mdl-button--raised" href="<%= product.url %>" target="_blank"><i class="fa fa-shopping-cart" aria-hidden="true"></i></a></div>
+
+			<div class="cardp-top-right delete">
+
+				<%= simple_form_for @item, :url => url_for(:action => 'destroy', :controller => 'items'), :method => :delete, :remote => true do |f| %>
+					<%= f.input :asin, :as => :hidden, input_html: {value: product.asin} %>
+					<%= f.input :friend_id, :as => :hidden, input_html: {value: @friend.id} %>
+				    <%= f.button :submit, 'Remove', class: 'cta cta-secondary cta-small' %>
+				<% end %>	
+
+			</div>
+
+			<div class="cardp-bottom">
+				<h5><%= product.price %> - <%= product.title %></h5>
+			</div>
+			<div class="cardp-bottom-clear">
+
+				<% if product.comments.size > 0 %>
+					<div class="comment-nb nb">
+						<p><%= product.comments.size %><i class="fa fa-commenting" aria-hidden="true"></i></p>
+					</div>
+				<% end %>
+
+				<!-- To fix -->
+				<% if product.comments.size > 0 %>
+					<div class="love-nb nb">
+						<p><%= product.comments.size %><i class="fa fa-heart" aria-hidden="true"></i></p>
+					</div>
+				<% end %>
+
+			</div>
+			</a>
+		</div>
+	<% end %>
+	</div>
+</div>
+</section>
+
+<!-- Modal -->
+<% if @iframe %>
+<div class="modal fade" id="exampleModalLong" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <!--<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>-->
+      </div>
+      <div class="modal-body">
+      	<div class="modal-img">
+        	<%= image_tag(@item_infos[0].image) %>
+        </div>
+        <div class="modal-title">
+        	<div class="left">
+        		<p><%= @item_infos[0].price %> - <%= @item_infos[0].title %></p>
+        	</div>
+        	<div class="right">
+				<a class="mdl-button mdl-js-button mdl-button--raised" href="<%= @item_infos[0].url %>" target="_blank"><i class="fa fa-shopping-cart" aria-hidden="true"></i></a>
+
+
+				<%= simple_form_for @love, :method => :create do |f| %>
+					<%= f.input :asin, :as => :hidden, input_html: {value: @item_infos[0].asin } %>
+					<%= f.input :friend_id, :as => :hidden, input_html: {value: @friend.id} %>
+					<%= f.input :user_id, :as => :hidden, input_html: {value: current_user.id} %>
+					<%= f.input :item_id, :as => :hidden, input_html: {value: @item_infos[0].id} %>
+			    	<%= f.button :submit, '<3', class: 'hidden' %>
+				<% end %>
+
+				<button class="mdl-button mdl-js-button mdl-button--raised love-btn" value="Submit" id="myButton"><%= @loves.size %> <i class="fa fa-heart" aria-hidden="true"></i></button>
+
+				<script type="text/javascript">
+				    $(document).ready(function() {
+				       $("#myButton").click(function() {
+				           $("#new_love").submit();
+				       });
+				    });
+				</script>
+
+        	</div>
+        </div>
+        <div class="modal-comments" id="comments">
+        	        	<!-- Insert Comment System Here -->
+        	<div class="comment-show">
+        	<% @comments.each do |comment| %>
+        		<div class="single-comment">
+       				<div class="left">
+       					<%= image_tag('default.png') %>
+       				</div>
+       				<div class="right">
+       					<p><span><%= comment.user.first_name %></span></p>
+       					<p><%= comment.content %> <span class="light">- <%= distance_of_time_in_words(comment.date, Time.now) %></span>
+       					<!-- to fix -->
+       					<% if comment.user_id == current_user.id %>
+	        				<%= simple_form_for @comment, :method => :delete do |f| %>
+								<%= f.input :id, :as => :hidden, input_html: {value: comment.id} %>
+								<%= f.input :asin, :as => :hidden, input_html: {value: comment.asin} %>
+								<%= f.input :friend_id, :as => :hidden, input_html: {value: comment.friend_id} %>
+							    <%= f.button :submit, 'delete', class: 'comment-delete' %>
+							<% end %>	
+						<% end %>
+						</p>
+        			</div>
+        		</div>
+        	<% end %>
+        	</div>
+
+        	<div class="comment-send">
+			<%= simple_form_for @comment, :method => :create do |f| %>
+				<%= f.input :content, label: false, placeholder: 'Add comment', input_html: {class: 'input-comments'} %>
+				<%= f.input :asin, :as => :hidden, input_html: {value: @item_infos[0].asin } %>
+				<%= f.input :friend_id, :as => :hidden, input_html: {value: @friend.id} %>
+				<%= f.input :user_id, :as => :hidden, input_html: {value: current_user.id} %>
+				<%= f.input :item_id, :as => :hidden, input_html: {value: @item_infos[0].id} %>
+			    <%= f.button :submit, 'Create', class: 'hide' %>
+			<% end %>
+			</div>
+        </div>
+        <div class="modal-reviews">
+			<iframe src="<%= @iframe %>"></iframe>
+		</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+$('#exampleModalLong').modal('show')
+</script>
+<% end %>
+
+<div id="snackbar">Sharing link (view only) copied to clipboard</div>
+<div id="snackbar2">Sharing link (manage) copied to clipboard</div>
+
+<script type="text/javascript">
+	var clipboard = new Clipboard('.copy-to-clipboard');
+	clipboard.on('success', function(e) {
+		    console.info('Action:', e.action);
+		    console.info('Text:', e.text);
+		    console.info('Trigger:', e.trigger);
+
+		    e.clearSelection();
+		    // Get the snackbar DIV
+		    var x = document.getElementById("snackbar")
+		    // Add the "show" class to DIV
+		    x.className = "show";
+		    // After 3 seconds, remove the show class from DIV
+		    setTimeout(function(){ x.className = x.className.replace("show", ""); }, 7000);
+		});
+
+	var clipboard = new Clipboard('.copy-to-clipboard-2');
+	clipboard.on('success', function(e) {
+		    console.info('Action:', e.action);
+		    console.info('Text:', e.text);
+		    console.info('Trigger:', e.trigger);
+
+		    e.clearSelection();
+		    // Get the snackbar DIV
+		    var x = document.getElementById("snackbar2")
+		    // Add the "show" class to DIV
+		    x.className = "show";
+		    // After 3 seconds, remove the show class from DIV
+		    setTimeout(function(){ x.className = x.className.replace("show", ""); }, 7000);
+		});
+
+</script>

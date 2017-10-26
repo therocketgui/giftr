@@ -1,0 +1,27 @@
+<div class="modal modal-create fade" id="add_friend_modal" tabindex="-1" role="dialog">
+  <div class="modal-dialog" role="document">
+    <div class="m-content">
+      <div class="m-header">
+        <h4>Create a new board for someone</h4>
+      </div>
+      <div class="m-body">
+        <%= simple_form_for @friend, :method => :post do |f| %>
+              <div class="form-group">
+              <%= f.input :name, :label => 'Who\'s this board for?',  input_html: {class: 'form-control'} %>
+              </div>
+              <div class="form-group">
+              <%= f.input :birthday, :as => :hidden, :label => 'Your friend\'s birthday (you\'ll be warned before)', input_html: {class: 'form-control'} %>
+              </div>
+              <%= f.input :user_id, :as => :hidden, input_html: {value: current_user.id} %>
+
+      </div>
+      <div class="m-footer">
+        <button type="button" class="secondary-btn" data-dismiss="modal">Close</button>
+              <%= f.button :submit, 'Create', class: 'main-btn' %>
+
+        <% end %>
+      </div>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+

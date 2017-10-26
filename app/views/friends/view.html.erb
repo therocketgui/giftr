@@ -1,0 +1,25 @@
+<%= render 'layouts/header_view' %>
+
+<section class="main" id="wishlist">
+<div class="container">
+	<div class="card-columns">
+	<% @items.each do |product| %>
+		<div class="cardp-container">
+			<div class="cardp">
+				<%= image_tag(product.image) %>
+			</div>
+
+			<div class="cardp-top-left"><a class="button-buy mdl-button mdl-js-button mdl-button--raised" href="<%= product.url %>" target="_blank"><i class="fa fa-shopping-cart" aria-hidden="true"></i></a></div>
+
+			<div class="cardp-bottom">
+				<h5><%= product.price %> - <%= product.title %></h5>
+			</div>
+		</div>
+	<% end %>
+	</div>
+</div>
+</section>
+
+<section class="join-bar">
+	<p>Join <%= @friend.user.first_name %> on Giftr! It's free and it's amazing :) <a href="/register" class="main-btn main-reverse btn-large">Join Giftr Now</a></p>
+</section>

@@ -1,0 +1,31 @@
+<div class="modal modal-create fade" id="edit_friend_modal-<%= @f.id %>" tabindex="-1" role="dialog">
+  <div class="modal-dialog" role="document">
+    <div class="m-content">
+      <div class="m-header">
+        <h4>Edit <%= @f.name %> board parameters</h4>
+      </div>
+      <div class="m-body">
+        <%= simple_form_for @friend, :method => :post do |f| %>
+              <div class="form-group">
+              <%= f.input :name, :label => 'Who\'s this board for?',  input_html: {class: 'form-control', value: @f.name} %>
+              </div>
+              <div class="form-group">
+              <%= f.input :birthday, :as => :hidden, :label => 'Your friend\'s birthday (you\'ll be warned before)', input_html: {class: 'form-control datepicker', value: @f.birthday} %>
+              </div>
+              <%= f.input :id, :as => :hidden, input_html: {value: @f.id} %>
+              <%= f.input :user_id, :as => :hidden, input_html: {value: current_user.id} %>
+
+      </div>
+      <div class="m-footer">
+        <button type="button" class="secondary-btn" data-dismiss="modal">Close</button>
+              <%= f.button :submit, 'Edit', class: 'main-btn' %>
+        <%= simple_form_for @friend, :method => :delete do |f| %>
+            <%= f.input :id, :as => :hidden, input_html: {value: @f.id} %>
+            <%= f.button :submit, 'Delete', class: 'secondary-btn' %>
+        <% end %>
+        <% end %>
+      </div>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+

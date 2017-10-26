@@ -1,0 +1,118 @@
+<%= render 'layouts/header_friends' %>
+
+<section class="subheader">
+			<div class="nav-left">
+				<ul>
+				<% @friend.likes.each do |like| %>
+					<li>
+					<%= simple_form_for @like, :url => url_for(:action => 'destroy', :controller => 'likes'), :method => :delete do |f| %>
+					<%= f.input :id, :as => :hidden, input_html: {value: like.id} %>
+					<%= f.input :friend_id, :as => :hidden, input_html: {value: @friend.id} %>
+					<%= f.button :submit, like.title+'  x', class: 'secondary-btn btn-large' %>
+					<% end %>
+					</li>
+				<% end %>
+				<ul>
+			</div>
+			<div class="nav-right">
+				<ul>
+				<%= simple_form_for @like, :url => url_for(:action => 'create', :controller => 'likes'), :method => :post do |f| %>
+					<li>
+					<%= f.input :title, label: false, placeholder: 'Search items', input_html: {class: 'input-likes'} %>
+					</li>
+					<li>
+					<%= f.input :friend_id, :as => :hidden, input_html: {value: @friend.id} %>
+				    <%= f.button :submit, 'Add', class: 'hide secondary-btn btn-large' %>
+				    </li>
+				<% end %>
+				<ul>
+			</div>
+</section>
+
+<section class="main">
+<div class="container">
+	<div class="card-columns">
+	<% @products.each do |product| %>
+		<div class="cardp-container">
+			<a href="/friends/<%= @friend.id %>/item/<%= product.asin %>">
+			<div class="cardp">
+				<%= image_tag(product.image) %>
+			</div>
+
+			<div class="cardp-top-left"><a class="button-buy mdl-button mdl-js-button mdl-button--raised" href="<%= product.url %>" target="_blank"><i class="fa fa-shopping-cart" aria-hidden="true"></i></a></div>
+
+			<div class="cardp-top-right add">
+
+			<%= simple_form_for @item, :url => url_for(:action => 'create', :controller => 'items'), :method => :post, :remote => true do |f| %>
+					<%= f.input :asin, :as => :hidden, input_html: {value: product.asin} %>
+					<%= f.input :title, :as => :hidden, input_html: {value: product.title} %>
+					<%= f.input :author, :as => :hidden, input_html: {value: product.author} %>
+					<%= f.input :price, :as => :hidden, input_html: {value: product.price} %>
+					<%= f.input :image, :as => :hidden, input_html: {value: product.image} %>
+					<%= f.input :salesrank, :as => :hidden, input_html: {value: product.salesrank} %>
+					<%= f.input :url, :as => :hidden, input_html: {value: product.url} %>
+					<%= f.input :friend_id, :as => :hidden, input_html: {value: @friend.id} %>
+				    <%= f.button :submit, 'Add', class: 'button-board mdl-button mdl-js-button mdl-button--raised mdl-button--colored' %>
+			<% end %>
+
+			</div>
+
+			<div class="cardp-bottom">
+				<h5><%= product.price %> - <%= product.title %></h5>
+			</div>
+			</a>
+		</div>
+	<% end %>
+	</div>
+</div>
+</section>
+
+
+<!-- Modal -->
+<% if @iframe %>
+<div class="modal fade" id="exampleModalLong" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+
+        <div class="left">
+			<a class="mdl-button mdl-js-button mdl-button--raised" href="<%= @item_infos[0].url %>" target="_blank"><i class="fa fa-shopping-cart" aria-hidden="true"></i></a>
+        </div>
+
+      	<div class="right">
+      	  	<%= simple_form_for @item, :url => url_for(:action => 'create_modal', :controller => 'items'), :method =>:post do |f| %>
+				<%= f.input :asin, :as => :hidden, input_html: {value: @item_infos[0].asin} %>
+				<%= f.input :title, :as => :hidden, input_html: {value: @item_infos[0].title} %>
+				<%= f.input :author, :as => :hidden, input_html: {value: @item_infos[0].author} %>
+				<%= f.input :price, :as => :hidden, input_html: {value: @item_infos[0].price} %>
+				<%= f.input :image, :as => :hidden, input_html: {value: @item_infos[0].image} %>
+				<%= f.input :salesrank, :as => :hidden, input_html: {value: @item_infos[0].salesrank} %>
+				<%= f.input :url, :as => :hidden, input_html: {value: @item_infos[0].url} %>
+				<%= f.input :friend_id, :as => :hidden, input_html: {value: @friend.id} %>
+			    <%= f.button :submit, 'Add to wish list', class: 'mdl-button mdl-js-button mdl-button--raised mdl-button--colored' %>
+			<% end %>
+		</div>
+
+        <!--<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>-->
+      </div>
+      <div class="modal-body">
+      	<div class="modal-img">
+        	<%= image_tag(@item_infos[0].image) %>
+        </div>
+        <div class="modal-title">
+        	<p><%= @item_infos[0].price %> - <%= @item_infos[0].title %></p>
+        </div>
+        <div class="modal-reviews">
+			<iframe src="<%= @iframe %>"></iframe>
+		</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+$('#exampleModalLong').modal('show')
+</script>
+<% end %>
